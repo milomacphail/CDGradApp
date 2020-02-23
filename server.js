@@ -1,11 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const cors = require('cors');
 
 const graduates = require("./routes/api/graduates");
-
 
 app.use(cors());
 app.use(express.json());
@@ -20,6 +19,7 @@ connection.once('open', () => {
 })
 
 app.use('/api/graduates', graduates);
+app.use(express.static('public')); 
 
 const port = process.env.PORT || 3000;
 
