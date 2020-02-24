@@ -69,3 +69,24 @@ function addGraduate() {
     xhrPost.setRequestHeader("Content-Type", "application/json");
     xhrPost.send(JSON.stringify(article));
 }
+
+function removeGraduate() {
+    let xhrDelete = new XMLHttpRequest();
+    console.log(xhrDelete);
+
+    var deletedData = JSON.parse(xhrDelete.responseText);
+
+    for (var i = 0; i < deletedData.length; i++){
+            const id = deletedData[i].id;
+            xhrDelete.open("DELETE", `http://localhost:3000/routes/api/graduates/${id}`, true);
+                xhrDelete.onload = function() {
+                    if(xhrDelete.status == 200) {
+                        console.log("Success");
+                    } else {
+                        console.log("Error");
+                    }
+                }
+
+                xhrDelete.send();
+            }
+    }
