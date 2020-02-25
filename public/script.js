@@ -1,73 +1,63 @@
-const getRequest = (method, url, data) => {
-    const promise = new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
+var url  = "http://localhost:3000/api/graduates";
+var xhrGetAll  = new XMLHttpRequest();
+xhrGetAll.open('GET', url, true);
+xhrGetAll.send();
 
-        xhr.open(method, url);
-
-        xhr.responseType = "json";
-
-        if (data) {
-            xhr.setRequestHeader("Content-Type", "application/json");
-        }
-
-        xhr.onload = () => {
-            if (xhr.status >= 400) {
-                reject(xhr.response);
-            } else {
-                resolve(xhr.response);
-            }
-        };
-
-        xhr.onerror = () => {
-            reject("Error occurred.");
-        };
-
-        xhr.send(JSON.stringify(data));
-    });
-    return promise;
+xhrGetAll.onload = () => {
+    console.log(xhrGetAll);
+	var graduates = JSON.parse(xhrGetAll.response);
+	if (xhrGetAll.readyState == 4 && xhrGetAll.status == "200") {
+		console.table(graduates);
+	} else {
+		console.error("Error!");
+	}
 }
+
+
 
 const getAllGraduates = () => {
     console.log("Connected");
-    getRequest("GET", "http://localhost:3000/routes/api/graduates", true)
+    getRequest("GET", "http://localhost:3000/api/graduates")
         .then(responseData => {
             console.log(responseData);
 
-            const showArticles = responseData.map(element => {
+            const renderGrads = responseData.map(element => {
                 return (
                     "<li>" +
                     "Name: " +
-                    element.title +
+                    element.name +
                     " , " +
                     "Role: " +
-                    element.poster +
+                    element.role +
                     " , " +
                     "Company: " +
-                    element.description +
+                    element.company +
                     " , " +
                     "Date of Graduation: " +
-                    element.dateOfGraduation +
+                    element.yearOfGraduation +
                     "</li>"
                 )
             })
             document.getElementById("results").innerHTML =
-                "<ul>" + showArticles.join("\n") + "</ul>";
+                "<ul>" + renderGrads.join("\n") + "</ul>";
         }
         )
 }
 
 
-function addGraduate() {
-    let article = {
-        title: document.getElementById("name").value,
-        poster: document.getElementById("role").value,
-        description: document.getElementById("company").value,
-        dateOfGraduation: document.getElementById("dateOfGraduation").value
+function addGraduate(e) {
+    e.preventDefault();
+    console.log("Submit");
+    let graduate = {
+        name: document.getElementById("name").value,
+        role: document.getElementById("role").value,
+        company: document.getElementById("company").value,
+        yearOfGraduation: document.getElementById("yearOfGraduation").value
     };
     let xhrPost = new window.XMLHttpRequest();
-    xhrPost.open("OPEN", "http://localhost:3000/routes/api/graduates");
+    xhrPost.open("POST", "http://localhost:3000/api/graduates");
     xhrPost.setRequestHeader("Content-Type", "application/json");
-    xhrPost.send(JSON.stringify(article));
+    xhrPost.send(JSON.stringify(graduate));
 }
 
 function removeGraduate() {
@@ -86,7 +76,6 @@ function removeGraduate() {
                         console.log("Error");
                     }
                 }
-
-                xhrDelete.send();
+                xhrDelete.send(null);
             }
     }
